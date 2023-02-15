@@ -55,7 +55,14 @@ The script creates two CSV files with the following columns:
 - _fSHAPE-n_: fSHAPE value for every nucleotide in the motif
 - _SHAPE-n_: SHAPE value for every nucleotide in the motif
 
-The `output.csv` contains all results, while `output-filtered.csv` may have some of the motifs filtered out. In the latter case, motif is discarded if there is a strong discrepancy for any of its nucleotides (i.e. if the query requests it to be a strong signal, but the motif does not show it).
+The `output.csv` contains all results, while `output-filtered.csv` may have some of the motifs filtered out. The filtering removes matches if for any nucleotide the query has fSHAPE greater than 1.0 but the match has fSHAPE less than 1.0. Signals >= 1.0 are desirable in the output profiles because higher fSHAPE signal is indicative of a true protein binding site. Matrix Profile does not care about signal magnitude as long as the overall "shape" of the query looks like the overall "shape" of the match. Filtering removes those spurious results.
+
+If sequence is available for the query pattern and the queried profiles, sequence score is computed as a sum of points for every letter in the output motif sequence:
+- match is +2 points (e.g. 'G' in query and 'G' in motif)
+- purine/pyrimidine match is +1 point (e.g. 'G' in query and 'A' in motif)
+- mismatch is 0 points
+- indels are not possible as query and motifs are of the same length
+- only 'N', 'A', 'C', 'G', 'U', 'T' are supported
 
 The result usually requires manual curation. The table is sorted according to the _Z-normalized_ column, but it is just a starting point and user should take into account _Distance_ and _Sequence-Score_ as well when selecting the matches.
 
